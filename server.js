@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 });
 
 // NFC / keychain link page (permanent URL — goes on keychains)
-app.get('/links', (req, res) => {
+app.get('/marketing/social/cerberusmaker', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
