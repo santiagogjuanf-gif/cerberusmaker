@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "label": "Instagram",
+    "sublabel": "@cerberusmaker",
+    "url": "https://instagram.com/cerberusmaker",
+    "icon": "instagram",
+    "active": true,
+    "order": 1
+  },
+  {
+    "id": 2,
+    "label": "Tienda Etsy",
+    "sublabel": "Ver productos",
+    "url": "https://etsy.com/shop/cerberusmaker",
+    "icon": "shop",
+    "active": true,
+    "order": 2
+  },
+  {
+    "id": 3,
+    "label": "WhatsApp — Pedidos",
+    "sublabel": "Escríbenos directo",
+    "url": "https://wa.me/51935382020",
+    "icon": "whatsapp",
+    "active": true,
+    "order": 3
+  }
+]

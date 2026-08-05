@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — CerberusMaker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #FF6B1A;
+      --bg: #0D0D0D;
+      --card: #161616;
+      --card2: #1E1E1E;
+      --border: #2A2A2A;
+      --text: #F0F0F0;
+      --muted: #888;
+    }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-brand { font-size: 16px; font-weight: 700; }
+    .header-brand span { color: var(--orange); }
+    .header-actions { display: flex; gap: 12px; align-items: center; }
+    .btn-view { font-size: 13px; color: var(--muted); text-decoration: none; }
+    .btn-view:hover { color: var(--text); }
+    .btn-logout {
+      font-size: 12px; padding: 7px 14px;
+      background: transparent; border: 1px solid var(--border);
+      border-radius: 6px; color: var(--muted);
+      cursor: pointer; font-family: inherit;
+      text-decoration: none;
+    }
+    .btn-logout:hover { border-color: var(--orange); color: var(--orange); }
+
+    main { max-width: 700px; margin: 0 auto; padding: 40px 24px; }
+    h2 { font-size: 20px; margin-bottom: 8px; }
+    .subtitle { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+
+    .links-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 36px; }
+
+    .link-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .drag-handle { color: #444; cursor: grab; font-size: 18px; user-select: none; }
+    .drag-handle:active { cursor: grabbing; }
+    .link-info { flex: 1; }
+    .link-card-label { font-size: 14px; font-weight: 600; }
+    .link-card-url { font-size: 12px; color: var(--muted); margin-top: 2px; word-break: break-all; }
+    .link-card-actions { display: flex; gap: 8px; align-items: center; }
+
+    .toggle {
+      position: relative; width: 40px; height: 22px;
+    }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: #333; border-radius: 22px;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute;
+      width: 16px; height: 16px;
+      left: 3px; top: 3px;
+      background: #fff; border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--orange); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(18px); }
+
+    .btn-edit {
+      padding: 6px 12px; background: transparent;
+      border: 1px solid var(--border); border-radius: 6px;
+      color: var(--text); font-family: inherit;
+      font-size: 12px; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-edit:hover { border-color: var(--orange); color: var(--orange); }
+
+    .btn-del {
+      padding: 6px 10px; background: transparent;
+      border: 1px solid transparent; border-radius: 6px;
+      color: #555; font-family: inherit;
+      font-size: 16px; cursor: pointer; transition: all 0.15s;
+    }
+    .btn-del:hover { color: #ff4444; border-color: #ff4444; }
+
+    /* Add form */
+    .add-section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+    .add-section h3 { font-size: 15px; margin-bottom: 20px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-col { display: flex; flex-direction: column; gap: 6px; }
+    .form-col.full { grid-column: 1 / -1; }
+    label { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    input, select {
+      padding: 10px 14px; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); font-family: inherit; font-size: 14px;
+      outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    input:focus, select:focus { border-color: var(--orange); }
+    select option { background: #1E1E1E; }
+    .btn-add {
+      margin-top: 18px; padding: 12px 24px;
+      background: var(--orange); color: #0D0D0D;
+      border: none; border-radius: 8px;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .btn-add:hover { box-shadow: 0 0 20px rgba(255,107,26,0.4); transform: translateY(-1px); }
+
+    /* Modal */
+    .modal-bg {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7); z-index: 100;
+      align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; width: 100%; max-width: 480px;
+    }
+    .modal h3 { font-size: 16px; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; justify-content: flex-end; }
+    .btn-cancel {
+      padding: 10px 18px; background: transparent;
+      border: 1px solid var(--border); border-radius: 8px;
+      color: var(--muted); font-family: inherit; font-size: 14px; cursor: pointer;
+    }
+    .btn-save {
+      padding: 10px 18px; background: var(--orange);
+      color: #0D0D0D; border: none; border-radius: 8px;
+      font-family: inherit; font-size: 14px; font-weight: 700; cursor: pointer;
+    }
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: #1E1E1E; border: 1px solid var(--orange);
+      color: var(--text); padding: 12px 20px;
+      border-radius: 10px; font-size: 13px;
+      opacity: 0; transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand"><span>Cerberus</span>Maker — Admin</div>
+    <div class="header-actions">
+      <a class="btn-view" href="/" target="_blank">Ver página pública →</a>
+      <a class="btn-logout" href="/admin/logout">Cerrar sesión</a>
+    </div>
+  </header>
+
+  <main>
+    <h2>Links activos</h2>
+    <p class="subtitle">Arrastra para reordenar · Activa o desactiva con el toggle · Edita o elimina con los botones</p>
+
+    <div class="links-list" id="links-list"></div>
+
+    <div class="add-section">
+      <h3>Agregar nuevo link</h3>
+      <div class="form-grid">
+        <div class="form-col">
+          <label for="new-label">Nombre del botón</label>
+          <input id="new-label" type="text" placeholder="Ej: TikTok">
+        </div>
+        <div class="form-col">
+          <label for="new-sublabel">Subtítulo (opcional)</label>
+          <input id="new-sublabel" type="text" placeholder="Ej: Síguenos en TikTok">
+        </div>
+        <div class="form-col full">
+          <label for="new-url">URL</label>
+          <input id="new-url" type="url" placeholder="https://...">
+        </div>
+        <div class="form-col">
+          <label for="new-icon">Ícono</label>
+          <select id="new-icon">
+            <option value="instagram">Instagram</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="shop">Tienda</option>
+            <option value="link">Link genérico</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-add" onclick="addLink()">+ Agregar link</button>
+    </div>
+  </main>
+
+  <!-- Edit modal -->
+  <div class="modal-bg" id="modal">
+    <div class="modal">
+      <h3>Editar link</h3>
+      <div class="form-grid">
+        <div class="form-col">
+          <label>Nombre</label>
+          <input id="edit-label" type="text">
+        </div>
+        <div class="form-col">
+          <label>Subtítulo</label>
+          <input id="edit-sublabel" type="text">
+        </div>
+        <div class="form-col full">
+          <label>URL</label>
+          <input id="edit-url" type="url">
+        </div>
+        <div class="form-col">
+          <label>Ícono</label>
+          <select id="edit-icon">
+            <option value="instagram">Instagram</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="shop">Tienda</option>
+            <option value="link">Link genérico</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+        <button class="btn-save" onclick="saveEdit()">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let links = [];
+    let editingId = null;
+    let dragSrc = null;
+
+    function toast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    async function loadLinks() {
+      const res = await fetch('/admin/api/links');
+      links = await res.json();
+      render();
+    }
+
+    function render() {
+      const list = document.getElementById('links-list');
+      list.innerHTML = links.map(link => `
+        <div class="link-card" draggable="true" data-id="${link.id}"
+          ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="drop(event)">
+          <span class="drag-handle">⠿</span>
+          <div class="link-info">
+            <div class="link-card-label">${link.label}${link.sublabel ? ' <span style="color:#666;font-weight:400">— ' + link.sublabel + '</span>' : ''}</div>
+            <div class="link-card-url">${link.url}</div>
+          </div>
+          <div class="link-card-actions">
+            <label class="toggle" title="Activar / desactivar">
+              <input type="checkbox" ${link.active ? 'checked' : ''} onchange="toggleLink(${link.id}, this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+            <button class="btn-edit" onclick="openEdit(${link.id})">Editar</button>
+            <button class="btn-del" onclick="deleteLink(${link.id})" title="Eliminar">✕</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function toggleLink(id, active) {
+      await fetch(`/admin/api/links/${id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active })
+      });
+      const link = links.find(l => l.id === id);
+      if (link) link.active = active;
+      toast(active ? 'Link activado' : 'Link desactivado');
+    }
+
+    async function deleteLink(id) {
+      if (!confirm('¿Eliminar este link?')) return;
+      await fetch(`/admin/api/links/${id}`, { method: 'DELETE' });
+      links = links.filter(l => l.id !== id);
+      render();
+      toast('Link eliminado');
+    }
+
+    function openEdit(id) {
+      editingId = id;
+      const link = links.find(l => l.id === id);
+      document.getElementById('edit-label').value = link.label;
+      document.getElementById('edit-sublabel').value = link.sublabel || '';
+      document.getElementById('edit-url').value = link.url;
+      document.getElementById('edit-icon').value = link.icon;
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      editingId = null;
+    }
+
+    async function saveEdit() {
+      const data = {
+        label: document.getElementById('edit-label').value,
+        sublabel: document.getElementById('edit-sublabel').value,
+        url: document.getElementById('edit-url').value,
+        icon: document.getElementById('edit-icon').value
+      };
+      await fetch(`/admin/api/links/${editingId}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const idx = links.findIndex(l => l.id === editingId);
+      if (idx !== -1) links[idx] = { ...links[idx], ...data };
+      closeModal();
+      render();
+      toast('Link actualizado');
+    }
+
+    async function addLink() {
+      const label = document.getElementById('new-label').value.trim();
+      const url = document.getElementById('new-url').value.trim();
+      if (!label || !url) return alert('Nombre y URL son requeridos');
+      const data = {
+        label,
+        sublabel: document.getElementById('new-sublabel').value.trim(),
+        url,
+        icon: document.getElementById('new-icon').value
+      };
+      const res = await fetch('/admin/api/links', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const newLink = await res.json();
+      links.push(newLink);
+      document.getElementById('new-label').value = '';
+      document.getElementById('new-sublabel').value = '';
+      document.getElementById('new-url').value = '';
+      render();
+      toast('Link agregado');
+    }
+
+    // Drag and drop
+    function dragStart(e) {
+      dragSrc = e.currentTarget;
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      const target = e.currentTarget;
+      if (dragSrc === target) return;
+
+      const srcId = parseInt(dragSrc.dataset.id);
+      const tgtId = parseInt(target.dataset.id);
+      const srcIdx = links.findIndex(l => l.id === srcId);
+      const tgtIdx = links.findIndex(l => l.id === tgtId);
+
+      const [moved] = links.splice(srcIdx, 1);
+      links.splice(tgtIdx, 0, moved);
+      links.forEach((l, i) => l.order = i + 1);
+      render();
+
+      fetch('/admin/api/reorder', {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order: links.map(l => l.id) })
+      });
+      toast('Orden guardado');
+    }
+
+    loadLinks();
+  </script>
+</body>
+</html>
