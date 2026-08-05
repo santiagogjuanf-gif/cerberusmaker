@@ -8,8 +8,8 @@ echo  Instalando dependencias...
 call npm install
 echo.
 echo  Iniciando servidor...
-echo  Pagina principal: http://localhost:11094
-echo  Admin panel:      http://localhost:11094/admin
+echo  Pagina principal: http://localhost:1194
+echo  Admin panel:      http://localhost:1194/admin
 echo  Contrasena:       cerberus2024
 echo.
 node server.js
