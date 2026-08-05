@@ -10,8 +10,8 @@
   },
   {
     "id": 2,
-    "label": "Tienda Etsy",
-    "sublabel": "Ver productos",
+    "label": "Etsy Shop",
+    "sublabel": "Browse our products",
     "url": "https://etsy.com/shop/cerberusmaker",
     "icon": "shop",
     "active": true,
@@ -19,8 +19,8 @@
   },
   {
     "id": 3,
-    "label": "WhatsApp — Pedidos",
-    "sublabel": "Escríbenos directo",
+    "label": "WhatsApp — Orders",
+    "sublabel": "Message us directly",
     "url": "https://wa.me/5193538202",
     "icon": "whatsapp",
     "active": true,

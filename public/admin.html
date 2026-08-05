@@ -163,57 +163,57 @@
   <header>
     <div class="header-brand"><span>Cerberus</span>Maker — Admin</div>
     <div class="header-actions">
-      <a class="btn-view" href="/" target="_blank">Ver página pública →</a>
-      <a class="btn-logout" href="/admin/logout">Cerrar sesión</a>
+      <a class="btn-view" href="/" target="_blank">View public page →</a>
+      <a class="btn-logout" href="/admin/logout">Log out</a>
     </div>
   </header>
 
   <main>
-    <h2>Links activos</h2>
-    <p class="subtitle">Arrastra para reordenar · Activa o desactiva con el toggle · Edita o elimina con los botones</p>
+    <h2>Active links</h2>
+    <p class="subtitle">Drag to reorder · Toggle to enable or disable · Edit or delete with the buttons</p>
 
     <div class="links-list" id="links-list"></div>
 
     <div class="add-section">
-      <h3>Agregar nuevo link</h3>
+      <h3>Add new link</h3>
       <div class="form-grid">
         <div class="form-col">
-          <label for="new-label">Nombre del botón</label>
-          <input id="new-label" type="text" placeholder="Ej: TikTok">
+          <label for="new-label">Button label</label>
+          <input id="new-label" type="text" placeholder="e.g. TikTok">
         </div>
         <div class="form-col">
-          <label for="new-sublabel">Subtítulo (opcional)</label>
-          <input id="new-sublabel" type="text" placeholder="Ej: Síguenos en TikTok">
+          <label for="new-sublabel">Subtitle (optional)</label>
+          <input id="new-sublabel" type="text" placeholder="e.g. Follow us on TikTok">
         </div>
         <div class="form-col full">
           <label for="new-url">URL</label>
           <input id="new-url" type="url" placeholder="https://...">
         </div>
         <div class="form-col">
-          <label for="new-icon">Ícono</label>
+          <label for="new-icon">Icon</label>
           <select id="new-icon">
             <option value="instagram">Instagram</option>
             <option value="whatsapp">WhatsApp</option>
-            <option value="shop">Tienda</option>
-            <option value="link">Link genérico</option>
+            <option value="shop">Shop</option>
+            <option value="link">Generic link</option>
           </select>
         </div>
       </div>
-      <button class="btn-add" onclick="addLink()">+ Agregar link</button>
+      <button class="btn-add" onclick="addLink()">+ Add link</button>
     </div>
   </main>
 
   <!-- Edit modal -->
   <div class="modal-bg" id="modal">
     <div class="modal">
-      <h3>Editar link</h3>
+      <h3>Edit link</h3>
       <div class="form-grid">
         <div class="form-col">
-          <label>Nombre</label>
+          <label>Label</label>
           <input id="edit-label" type="text">
         </div>
         <div class="form-col">
-          <label>Subtítulo</label>
+          <label>Subtitle</label>
           <input id="edit-sublabel" type="text">
         </div>
         <div class="form-col full">
@@ -221,18 +221,18 @@
           <input id="edit-url" type="url">
         </div>
         <div class="form-col">
-          <label>Ícono</label>
+          <label>Icon</label>
           <select id="edit-icon">
             <option value="instagram">Instagram</option>
             <option value="whatsapp">WhatsApp</option>
-            <option value="shop">Tienda</option>
-            <option value="link">Link genérico</option>
+            <option value="shop">Shop</option>
+            <option value="link">Generic link</option>
           </select>
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-        <button class="btn-save" onclick="saveEdit()">Guardar</button>
+        <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-save" onclick="saveEdit()">Save</button>
       </div>
     </div>
   </div>
@@ -268,12 +268,12 @@
             <div class="link-card-url">${link.url}</div>
           </div>
           <div class="link-card-actions">
-            <label class="toggle" title="Activar / desactivar">
+            <label class="toggle" title="Enable / disable">
               <input type="checkbox" ${link.active ? 'checked' : ''} onchange="toggleLink(${link.id}, this.checked)">
               <span class="toggle-slider"></span>
             </label>
-            <button class="btn-edit" onclick="openEdit(${link.id})">Editar</button>
-            <button class="btn-del" onclick="deleteLink(${link.id})" title="Eliminar">✕</button>
+            <button class="btn-edit" onclick="openEdit(${link.id})">Edit</button>
+            <button class="btn-del" onclick="deleteLink(${link.id})" title="Delete">✕</button>
           </div>
         </div>
       `).join('');
@@ -286,15 +286,15 @@
       });
       const link = links.find(l => l.id === id);
       if (link) link.active = active;
-      toast(active ? 'Link activado' : 'Link desactivado');
+      toast(active ? 'Link enabled' : 'Link disabled');
     }
 
     async function deleteLink(id) {
-      if (!confirm('¿Eliminar este link?')) return;
+      if (!confirm('Delete this link?')) return;
       await fetch(`/admin/api/links/${id}`, { method: 'DELETE' });
       links = links.filter(l => l.id !== id);
       render();
-      toast('Link eliminado');
+      toast('Link deleted');
     }
 
     function openEdit(id) {
@@ -327,13 +327,13 @@
       if (idx !== -1) links[idx] = { ...links[idx], ...data };
       closeModal();
       render();
-      toast('Link actualizado');
+      toast('Link updated');
     }
 
     async function addLink() {
       const label = document.getElementById('new-label').value.trim();
       const url = document.getElementById('new-url').value.trim();
-      if (!label || !url) return alert('Nombre y URL son requeridos');
+      if (!label || !url) return alert('Label and URL are required');
       const data = {
         label,
         sublabel: document.getElementById('new-sublabel').value.trim(),
@@ -350,7 +350,7 @@
       document.getElementById('new-sublabel').value = '';
       document.getElementById('new-url').value = '';
       render();
-      toast('Link agregado');
+      toast('Link added');
     }
 
     // Drag and drop
@@ -383,7 +383,7 @@
         method: 'PUT', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order: links.map(l => l.id) })
       });
-      toast('Orden guardado');
+      toast('Order saved');
     }
 
     loadLinks();
