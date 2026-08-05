@@ -29,8 +29,13 @@ function requireAdmin(req, res, next) {
   res.redirect('/admin/login');
 }
 
-// Public NFC page
+// Root — Coming Soon page
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'coming-soon.html'));
+});
+
+// NFC / keychain link page (permanent URL — goes on keychains)
+app.get('/links', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -114,6 +119,11 @@ app.put('/admin/api/reorder', requireAdmin, (req, res) => {
   });
   writeLinks(links);
   res.json({ ok: true });
+});
+
+// 404 — catch all unknown routes
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
 app.listen(config.port, () => {
