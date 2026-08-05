@@ -1,5 +1,5 @@
 {
-  "port": 1194,
+  "port": 8443,
   "adminPassword": "cerberus2024",
   "sessionSecret": "cm-secret-change-this-in-production"
 }

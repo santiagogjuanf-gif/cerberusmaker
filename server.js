@@ -126,7 +126,8 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'public', '404.html'));
 });
 
-app.listen(config.port, () => {
-  console.log(`CerberusMaker running at http://localhost:${config.port}`);
-  console.log(`Admin panel: http://localhost:${config.port}/admin`);
+const PORT = process.env.PORT || config.port;
+app.listen(PORT, () => {
+  console.log(`CerberusMaker running at http://localhost:${PORT}`);
+  console.log(`Admin panel: http://localhost:${PORT}/admin`);
 });
